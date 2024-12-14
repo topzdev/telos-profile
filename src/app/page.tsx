@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://telos-frame.netlify.app"}`,
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://telos-frame.netlify.app"}/telos-seo-cover.jpg`,
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://telos-frame.netlify.app"}/telos-seo-cover-og.jpg`,
         alt: "Telos SEO Cover",
         width: 1200,
         height: 630,
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     description:
       "Join the Telos movement and showcase your support for the fastest, eco-friendly blockchain. Change your profile picture to the Telos frame and help spread the word about a scalable, decentralized future. Together, we build better!",
     images: [
-      `${process.env.NEXT_PUBLIC_SITE_URL || "https://telos-frame.netlify.app"}/telos-seo-cover.jpg`,
+      `${process.env.NEXT_PUBLIC_SITE_URL || "https://telos-frame.netlify.app"}/telos-seo-cover-twitter.jpg`,
     ],
   },
 };
