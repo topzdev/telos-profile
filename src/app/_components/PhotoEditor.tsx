@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import PreviewFrame from "@/app/_components/PreviewFrame";
 import PhotoEditorDialog from "@/app/_components/PhotoEditorDialog";
-import { createImage } from "@/lib/cropImage";
 import Typography from "@/components/ui/typography";
 
 interface PhotoEditorProps {
@@ -18,6 +17,9 @@ const PhotoEditor: React.FC<PhotoEditorProps> = ({
 }) => {
   const { toast } = useToast();
   const fileInputRef = useRef<any>(null);
+  const [manualDownloadUrl, setManualDownloadUrl] = useState<string | null>(
+    null,
+  );
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState(false);
@@ -31,21 +33,54 @@ const PhotoEditor: React.FC<PhotoEditorProps> = ({
 
   const handleDownload = async () => {
     setLoading(true);
-    setTimeout(async () => {
+
+    if (!finalImage) {
+      toast({
+        title: "Error",
+        description: "Image is not ready for download.",
+        duration: 3000,
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Fetch the image as a Blob
+      const response = await fetch(finalImage);
+      const blob = await response.blob();
+
+      // Create a valid Blob URL
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Create a temporary anchor element
       const a = document.createElement("a");
-      a.href = finalImage;
-      a.download = "support-telos-" + Date.now() + ".png";
+      a.href = blobUrl;
+      a.download = `support-telos-${Date.now()}.png`; // Ensure a valid filename
+
+      // Append and trigger the click event
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
 
-      setLoading(false);
+      // Revoke the Blob URL to release memory
+      setManualDownloadUrl(blobUrl);
+      // URL.revokeObjectURL(blobUrl);
+
       toast({
         title: "Photo Downloaded",
         description: "Thank you for supporting Telos!",
         duration: 3000,
       });
-    }, 500);
+    } catch (error) {
+      console.error("Download error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to download the photo.",
+        duration: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputClick = (event: React.MouseEvent<any, MouseEvent>) => {
@@ -129,7 +164,17 @@ const PhotoEditor: React.FC<PhotoEditorProps> = ({
               Download Photo
             </Button>
             <Typography className="text-slate-400 text-xs mb-1" variant="small">
-              or press and hold the image above and save it to your library
+              or{" "}
+              <a
+                href={manualDownloadUrl || ""}
+                download={`support-telos-${Date.now()}.png`}
+                className={"underline"}
+              >
+                {" "}
+                Click here to manually download the photo
+              </a>
+              &nbsp;or press and hold the image above and save it to your
+              library
             </Typography>
             <Button
               className={"w-full"}
