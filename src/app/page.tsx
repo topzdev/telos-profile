@@ -19,7 +19,14 @@ export const metadata: Metadata = {
   description:
     "Join the Telos movement and showcase your support for the fastest, eco-friendly blockchain. Change your profile picture to the Telos frame and help spread the word about a scalable, decentralized future. Together, we build better!",
   openGraph: {
-    images: ["/telos-seo-cover.jpg"],
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://telos-frame.netlify.app"}/telos-seo-cover.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "Telos SEO Cover",
+      },
+    ],
   },
 };
 
